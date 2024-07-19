@@ -1,29 +1,39 @@
+import { Container } from "@/Components/Container";
+import { Button } from "@/Components/ui/button";
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout";
 import { PageProps, Post } from "@/types";
-import { Link } from "@inertiajs/react";
+import { Head, Link } from "@inertiajs/react";
 
 export default function ListPosts({
     auth,
     posts,
 }: PageProps & { posts: Post[] }) {
-    console.log(posts);
     return (
-        <AuthenticatedLayout user={auth.user}>
-            <div className="p-5 dark:text-white">
+        <AuthenticatedLayout
+            user={auth.user}
+            header={
                 <div className="flex">
-                    <h1 className="text-4xl font-bold flex-grow">Posts</h1>
-                    <button>Hey</button>
+                    <h2 className="flex-grow flex items-center align-center font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight">
+                        Posts
+                    </h2>
+                    <Button asChild>
+                        <Link href={route("posts.create")}>New Post</Link>
+                    </Button>
                 </div>
-                <div className="flex flex-col gap-3 mt-5">
+            }
+        >
+            <Head title="Posts" />
+            <Container>
+                <div className="flex flex-col gap-3">
                     {posts.map((post) => {
                         return (
                             <div
                                 key={post.id}
-                                className="border border-gray-200 dark:border-gray-700 p-4"
+                                className="border rounded-lg border-gray-200 dark:border-gray-700 p-4"
                             >
                                 <h2 className="border-b border-gray-100 dark:border-gray-800 p-2 text-xl font-semibold">
                                     <Link
-                                        href={route("view-post", {
+                                        href={route("posts.show", {
                                             id: post.id,
                                         })}
                                         className="hover:underline text-blue-400"
@@ -39,7 +49,7 @@ export default function ListPosts({
                         );
                     })}
                 </div>
-            </div>
+            </Container>
         </AuthenticatedLayout>
     );
 }

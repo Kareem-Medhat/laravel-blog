@@ -2,12 +2,14 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\AddCommentRequest;
 use App\Http\Requests\StorePostRequest;
 use App\Http\Requests\UpdatePostRequest;
+use App\Models\Comment;
 use App\Models\Post;
-use App\Models\User;
 use Illuminate\Support\Facades\Log;
 use Inertia\Inertia;
+use Illuminate\Support\Facades\Redirect;
 
 class PostController extends Controller
 {
@@ -16,10 +18,6 @@ class PostController extends Controller
      */
     public function index()
     {
-        $model = User::class;
-        $model = new $model;
-
-        Log::info($model->getForeignKey());
         return Inertia::render('Posts/ListPosts', [
             'posts' => Post::all(),
         ]);
@@ -28,9 +26,9 @@ class PostController extends Controller
     /**
      * Show the form for creating a new resource.
      */
-    public function create()
+    public function new()
     {
-        //
+        return Inertia::render('Posts/NewPost');
     }
 
     /**
@@ -38,7 +36,14 @@ class PostController extends Controller
      */
     public function store(StorePostRequest $request)
     {
-        //
+        Post::create([
+            'title' => $request->title,
+            'description' => $request->description,
+            'body' => $request->body,
+            'user_id' => $request->user()->id,
+        ]);
+
+        return Redirect::route('posts.index');
     }
 
     /**
@@ -46,8 +51,25 @@ class PostController extends Controller
      */
     public function show(Post $post)
     {
-        //
+        return Inertia::render('Posts/ShowPost', [
+            'post' => $post,
+        ]);
     }
+
+    /**
+     * Add a user comment to the specified post
+     */
+    public function comment(Post $post, AddCommentRequest $request)
+    {
+        $comment = new Comment([
+            'contents' => $request->contents,
+            'user_id' => $request->user()->id,
+        ]);
+
+        $post->comments()->save($comment);
+        return Redirect::route('posts.show', ['post' => $post]);
+    }
+
 
     /**
      * Show the form for editing the specified resource.
