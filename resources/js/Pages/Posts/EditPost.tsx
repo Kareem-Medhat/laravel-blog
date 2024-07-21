@@ -1,27 +1,32 @@
 import { FormEventHandler } from "react";
-import GuestLayout from "@/Layouts/GuestLayout";
 import InputError from "@/Components/InputError";
 import InputLabel from "@/Components/InputLabel";
 import PrimaryButton from "@/Components/PrimaryButton";
-import TextInput from "@/Components/TextInput";
 import { Head, useForm } from "@inertiajs/react";
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout";
-import { PageProps } from "@/types";
+import { EagerPost, PageProps } from "@/types";
 import { Container } from "@/Components/Container";
 import { Input } from "@/Components/ui/input";
 import { Textarea } from "@/Components/ui/textarea";
 
-export default function NewPost({ auth }: PageProps) {
-    const { data, setData, post, processing, errors, reset } = useForm({
-        title: "",
-        description: "",
-        body: "",
+export default function CreatePost({
+    auth,
+    post,
+}: PageProps & { post: EagerPost }) {
+    const { data, setData, patch, processing, errors } = useForm({
+        title: post.title,
+        description: post.description,
+        body: post.body,
     });
 
     const submit: FormEventHandler = (e) => {
         e.preventDefault();
 
-        post(route("posts.store"));
+        patch(
+            route("posts.update", {
+                id: post.id,
+            })
+        );
     };
 
     return (
@@ -29,11 +34,11 @@ export default function NewPost({ auth }: PageProps) {
             user={auth.user}
             header={
                 <h2 className="flex-grow flex items-center align-center font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight">
-                    New Post
+                    Edit Post
                 </h2>
             }
         >
-            <Head title="New Post" />
+            <Head title="Edit Post" />
 
             <Container>
                 <form onSubmit={submit}>
@@ -88,7 +93,7 @@ export default function NewPost({ auth }: PageProps) {
 
                     <div className="flex items-center justify-end mt-4">
                         <PrimaryButton className="ms-4" disabled={processing}>
-                            Create
+                            Edit
                         </PrimaryButton>
                     </div>
                 </form>

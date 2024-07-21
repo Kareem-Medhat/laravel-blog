@@ -7,7 +7,6 @@ use App\Http\Requests\StorePostRequest;
 use App\Http\Requests\UpdatePostRequest;
 use App\Models\Comment;
 use App\Models\Post;
-use Illuminate\Support\Facades\Log;
 use Inertia\Inertia;
 use Illuminate\Support\Facades\Redirect;
 
@@ -19,16 +18,16 @@ class PostController extends Controller
     public function index()
     {
         return Inertia::render('Posts/ListPosts', [
-            'posts' => Post::all(),
+            'posts' => Post::query()->orderBy('created_at', 'desc')->get(),
         ]);
     }
 
     /**
      * Show the form for creating a new resource.
      */
-    public function new()
+    public function create()
     {
-        return Inertia::render('Posts/NewPost');
+        return Inertia::render('Posts/CreatePost');
     }
 
     /**
@@ -76,7 +75,9 @@ class PostController extends Controller
      */
     public function edit(Post $post)
     {
-        //
+        return Inertia::render('Posts/EditPost', [
+            'post' => $post,
+        ]);
     }
 
     /**
@@ -84,7 +85,8 @@ class PostController extends Controller
      */
     public function update(UpdatePostRequest $request, Post $post)
     {
-        //
+        $post->update($request->input());
+        return Redirect::route('posts.show', ['post' => $post]);
     }
 
     /**
@@ -92,6 +94,7 @@ class PostController extends Controller
      */
     public function destroy(Post $post)
     {
-        //
+        $post->delete();
+        return Redirect::route('posts.index');
     }
 }
