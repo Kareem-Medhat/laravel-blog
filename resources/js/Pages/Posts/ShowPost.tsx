@@ -189,20 +189,15 @@ function Comment({ comment }: { comment: CommentType }) {
                     {new Date(comment.created_at).toLocaleDateString()}
                 </p>
                 <div className="pt-1">
-                    {!isEditing && (
-                        <>
-                            <button
-                                onClick={() => {
-                                    setIsEditing(true);
-                                }}
-                                className="transition hover:text-blue-500"
-                            >
-                                Edit
-                            </button>{" "}
-                            -{" "}
-                        </>
-                    )}
-
+                    <button
+                        onClick={() => {
+                            setIsEditing((v) => !v);
+                        }}
+                        className="transition hover:text-blue-500"
+                    >
+                        {isEditing ? "Back" : "Edit"}
+                    </button>{" "}
+                    -{" "}
                     <form
                         className="inline"
                         onSubmit={(e) => {
