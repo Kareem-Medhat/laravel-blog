@@ -8,6 +8,7 @@
 </p>
 
 # Getting Started
+- Install PHP >= 8.2 and NodeJS >= 16
 - `composer install && npm install` - To install dependencies
 - `cp .env.example .env` - Copy sample `.env`
 - `php artisan key:generate` - To generate `APP_KEY`
